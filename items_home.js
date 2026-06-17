@@ -2,13 +2,26 @@ console.log("items_home.js works 🔥");
 
 let allProducts = [];
 
-fetch('/shoop/products.json')
+// جلب المنتجات من سيرفر Render الأونلاين بدلاً من الملف المحلي القديم
+fetch('https://zayro-km0j.onrender.com/api/products')
 .then(response => response.json())
 .then(data => {
     allProducts = data.sort(() => Math.random() - 0.5);
     renderProducts(allProducts);
     setupSearch();
     setupCategoryFilter();
+})
+.catch(err => {
+    console.error("Error fetching online products, trying local backup:", err);
+    // حل احتياطي في حال تأخر السيرفر في الاستيقاظ
+    fetch('products.json')
+    .then(response => response.json())
+    .then(data => {
+        allProducts = data.sort(() => Math.random() - 0.5);
+        renderProducts(allProducts);
+        setupSearch();
+        setupCategoryFilter();
+    });
 });
 
 function getStarsHtml(rating) {
@@ -40,11 +53,12 @@ function renderProducts(products) {
             ? `<span class="sale_present">%${Math.floor((product.old_price - product.price) / product.old_price * 100)}</span>`
             : "";
 
+        // تم تعديل مسار الصورة هنا بحذف /shoop/
         return `
             <div class="product">
                 ${discount}
                 <div class="img_product" onclick="openProductModal(${product.id})" style="cursor:pointer;">
-                    <img src="/shoop/${product.img}" alt="${product.name}">
+                    <img src="${product.img}" alt="${product.name}">
                 </div>
                 <div class="product_info">
                     <p class="name_product" onclick="openProductModal(${product.id})">${product.name}</p>
@@ -86,7 +100,9 @@ document.addEventListener("click", (e) => {
             btn.classList.remove('wishlist_active');
         }
         localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        document.querySelector(".wishlist_count").innerText = wishlist.length;
+        if(document.querySelector(".wishlist_count")) {
+            document.querySelector(".wishlist_count").innerText = wishlist.length;
+        }
     }
 });
 
@@ -105,7 +121,8 @@ function setupCategoryFilter() {
             e.preventDefault();
             const cat = link.getAttribute("data-cat") || "all";
             if (select) select.value = cat;
-            document.querySelector(".category_nav_list").classList.remove("active");
+            const catList = document.querySelector(".category_nav_list");
+            if(catList) catList.classList.remove("active");
             applyFilter();
         });
     });
@@ -124,13 +141,14 @@ function applyFilter() {
 
 // Modal
 function openProductModal(id) {
-    fetch('/shoop/products.json')
+    fetch('https://zayro-km0j.onrender.com/api/products')
         .then(res => res.json())
         .then(products => {
             const product = products.find(p => p.id == id);
             if (product) {
+                // تعديل مسار الصورة والـ a href في الـ Modal لتتوافق مع جيت هاب
                 document.getElementById("modal_body").innerHTML = `
-                    <img src="/shoop/${product.img}" alt="">
+                    <img src="${product.img}" alt="">
                     <div class="info">
                         <h2>${product.name}</h2>
                         <div class="stars" style="margin:8px 0">${getStarsHtml(product.rating || 0)} <span style="font-size:13px;color:#888">(${product.reviews || 0})</span></div>
@@ -139,7 +157,7 @@ function openProductModal(id) {
                         <button onclick="addToCartFromModal(${product.id})" style="background:#000;color:#fff;padding:10px 20px;border:none;border-radius:2px;margin-top:15px;cursor:pointer;width:100%;font-size:14px;">
                             <i class="fa-solid fa-cart-shopping" style="color:#fff;margin-right:6px;"></i> Add To Cart
                         </button>
-                        <a href="/shoop/product.html?id=${product.id}" style="background:#f5f5f5;color:#000;padding:10px 20px;border-radius:2px;margin-top:8px;text-decoration:none;display:block;text-align:center;font-size:14px;">
+                        <a href="product.html?id=${product.id}" style="background:#f5f5f5;color:#000;padding:10px 20px;border-radius:2px;margin-top:8px;text-decoration:none;display:block;text-align:center;font-size:14px;">
                             View More
                         </a>
                     </div>
@@ -150,7 +168,8 @@ function openProductModal(id) {
 }
 
 function closeProductModal() {
-    document.getElementById("product_modal").style.display = "none";
+    const modal = document.getElementById("product_modal");
+    if(modal) modal.style.display = "none";
 }
 
 window.onclick = function(event) {
@@ -159,7 +178,7 @@ window.onclick = function(event) {
 }
 
 function addToCartFromModal(id) {
-    fetch('/shoop/products.json')
+    fetch('https://zayro-km0j.onrender.com/api/products')
         .then(res => res.json())
         .then(products => {
             const product = products.find(p => p.id == id);
@@ -169,9 +188,13 @@ function addToCartFromModal(id) {
                 if (existing) existing.quantity += 1;
                 else cart.push({...product, quantity: 1});
                 localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart();
+                
+                if (typeof updateCart === "function") {
+                    updateCart();
+                }
                 closeProductModal();
-                document.querySelector(".cart").classList.add("active");
+                const cartSide = document.querySelector(".cart");
+                if(cartSide) cartSide.classList.add("active");
             }
         });
 }
