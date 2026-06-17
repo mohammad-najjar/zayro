@@ -2,7 +2,6 @@ console.log("items_home.js works 🔥");
 
 let allProducts = [];
 
-// جلب المنتجات من سيرفر Render الأونلاين بدلاً من الملف المحلي القديم
 fetch('https://zayro-km0j.onrender.com/api/products')
 .then(response => response.json())
 .then(data => {
@@ -13,7 +12,6 @@ fetch('https://zayro-km0j.onrender.com/api/products')
 })
 .catch(err => {
     console.error("Error fetching online products, trying local backup:", err);
-    // حل احتياطي في حال تأخر السيرفر في الاستيقاظ
     fetch('products.json')
     .then(response => response.json())
     .then(data => {
@@ -53,7 +51,7 @@ function renderProducts(products) {
             ? `<span class="sale_present">%${Math.floor((product.old_price - product.price) / product.old_price * 100)}</span>`
             : "";
 
-        // تم تعديل مسار الصورة هنا بحذف /shoop/
+        // تعديل رابط الصورة في الشاشة الرئيسية ليقرأ من السيرفر
         return `
             <div class="product">
                 ${discount}
@@ -141,14 +139,14 @@ function applyFilter() {
 
 // Modal
 function openProductModal(id) {
-    <img src="https://zayro-km0j.onrender.com/${product.img}" alt="">)
+    fetch('https://zayro-km0j.onrender.com/api/products')
         .then(res => res.json())
         .then(products => {
             const product = products.find(p => p.id == id);
             if (product) {
-                // تعديل مسار الصورة والـ a href في الـ Modal لتتوافق مع جيت هاب
+                // تعديل رابط الصورة والصفحة في الـ Modal ليقرأ من السيرفر
                 document.getElementById("modal_body").innerHTML = `
-                    <img src="${product.img}" alt="">
+                    <img src="https://zayro-km0j.onrender.com/${product.img}" alt="">
                     <div class="info">
                         <h2>${product.name}</h2>
                         <div class="stars" style="margin:8px 0">${getStarsHtml(product.rating || 0)} <span style="font-size:13px;color:#888">(${product.reviews || 0})</span></div>
