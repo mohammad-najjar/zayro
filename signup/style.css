@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Changa+One:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+*{
+   
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Lato";
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: lightgray;
+    background-position: center;
+}
+.page-signup{
+    width: 420px;
+    margin-top: 90px;
+    background-color: rgb(15, 15, 15);
+    border: 2px solid rgb(225,225,225,0.2);
+    color: white;
+    padding: 30px 40px;
+    border-radius: 15px;
+}
+.page-signup h1{
+    font-size: 36px;
+    text-align: center;
+}
+.page-signup .input-signup{
+    position:relative ;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+.input-signup input{
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid rgba(225, 225, 225, 0.2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: white;
+    padding: 20px 45px 20px 20px;
+}
+.input-signup input::placeholder{
+        color: white;
+}
+.input-signup i {
+    position:absolute ;
+    right: 20px;
+    top: 30%;
+    transform:translateY(-50);
+    font-size: 20px;
+
+}
+.page-signup .remember-signup{
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    margin: -15px 0 15px;
+}
+.remember-signup label input{
+    accent-color: white;
+    margin-right: 3px;
+}
+.remember-signup a{
+    color:white;
+    text-decoration:none ;
+}
+.remember-signup a:hover{
+        text-decoration: underline;
+}
+
+.page-signup .btn{
+    width: 100%;
+    height: 45px;
+    background-color: white;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+
+}
+.page-signup .Login{
+    font-size: 15px;
+    text-align: center;
+    margin: 20px 0 15px;
+
+}
+.Login p a{
+    color: white;
+    text-decoration: none;
+}
+.Login p a:hover {
+        text-decoration: underline;
+}
+.img{
+    margin-top: -530px;
+    margin-right: -365px;
+}
+

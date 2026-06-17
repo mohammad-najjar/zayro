@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zayro Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        :root { --sidebar: #1a1a2e; --sidebar2: #16213e; --accent: #0f3460; --blue: #4361ee; --green: #2dc653; --red: #e63946; --orange: #fb8500; --bg: #f0f2f5; --white: #fff; --text: #333; --border: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); }
+
+        /* Login Screen */
+        #login_screen {
+            position: fixed; inset: 0; background: var(--sidebar);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .login_box {
+            background: var(--sidebar2); padding: 40px; border-radius: 12px;
+            width: 360px; text-align: center;
+        }
+        .login_box h2 { color: #fff; margin-bottom: 8px; font-size: 24px; }
+        .login_box p { color: #aaa; margin-bottom: 24px; font-size: 14px; }
+        .login_box input {
+            width: 100%; padding: 12px 16px; background: #0f3460; border: 1px solid #4361ee;
+            border-radius: 8px; color: #fff; font-size: 14px; margin-bottom: 12px; outline: none;
+        }
+        .login_box input::placeholder { color: #888; }
+        .login_box button {
+            width: 100%; padding: 12px; background: var(--blue); color: #fff;
+            border: none; border-radius: 8px; font-size: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .login_box button:hover { background: #3451d1; }
+        .login_error { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
+
+        /* Layout */
+        .layout { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px; background: var(--sidebar); color: #fff;
+            display: flex; flex-direction: column; position: fixed;
+            top: 0; right: 0; bottom: 0; z-index: 100;
+        }
+        .sidebar .logo {
+            padding: 24px 20px; border-bottom: 1px solid #ffffff15;
+            font-size: 20px; font-weight: bold; color: #fff;
+        }
+        .sidebar .logo span { color: var(--blue); }
+        .sidebar nav { flex: 1; padding: 16px 0; }
+        .sidebar nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 20px; color: #aaa; text-decoration: none;
+            font-size: 14px; transition: 0.2s; border-right: 3px solid transparent;
+        }
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background: #ffffff10; color: #fff; border-right-color: var(--blue);
+        }
+        .sidebar nav a i { width: 18px; text-align: center; }
+        .sidebar .logout_btn {
+            padding: 16px 20px; border-top: 1px solid #ffffff15;
+            display: flex; align-items: center; gap: 12px;
+            color: #aaa; cursor: pointer; font-size: 14px; transition: 0.2s;
+        }
+        .sidebar .logout_btn:hover { color: var(--red); }
+
+        /* Main */
+        .main { margin-right: 240px; flex: 1; }
+
+        /* Topbar */
+        .topbar {
+            background: var(--white); padding: 16px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 50;
+        }
+        .topbar h2 { font-size: 18px; color: var(--text); }
+        .topbar .admin_badge {
+            display: flex; align-items: center; gap: 8px;
+            background: #f0f2f5; padding: 6px 14px; border-radius: 20px; font-size: 13px;
+        }
+        .topbar .admin_badge i { color: var(--blue); }
+
+        /* Content */
+        .content { padding: 24px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Stats Cards */
+        .stats_grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .stat_card {
+            background: var(--white); border-radius: 12px; padding: 20px;
+            display: flex; align-items: center; gap: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .stat_card .icon {
+            width: 52px; height: 52px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 22px;
+        }
+        .stat_card .icon.blue { background: #4361ee20; color: var(--blue); }
+        .stat_card .icon.green { background: #2dc65320; color: var(--green); }
+        .stat_card .icon.orange { background: #fb850020; color: var(--orange); }
+        .stat_card .icon.red { background: #e6394620; color: var(--red); }
+        .stat_card h3 { font-size: 24px; font-weight: bold; }
+        .stat_card p { font-size: 13px; color: #888; margin-top: 2px; }
+
+        /* Tables */
+        .card {
+            background: var(--white); border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 24px;
+        }
+        .card_header {
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card_header h3 { font-size: 16px; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th { padding: 12px 16px; text-align: right; font-size: 12px; color: #888; font-weight: 600; border-bottom: 1px solid var(--border); background: #fafafa; text-transform: uppercase; }
+        td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+
+        /* Badges */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge.processing { background: #fff3cd; color: #856404; }
+        .badge.shipped { background: #cce5ff; color: #004085; }
+        .badge.delivered { background: #d4edda; color: #155724; }
+        .badge.admin { background: #e8f4fd; color: var(--blue); }
+        .badge.user { background: #f0f2f5; color: #555; }
+
+        /* Buttons */
+        .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn.primary { background: var(--blue); color: #fff; }
+        .btn.primary:hover { background: #3451d1; }
+        .btn.danger { background: var(--red); color: #fff; }
+        .btn.danger:hover { background: #c1121f; }
+        .btn.success { background: var(--green); color: #fff; }
+        .btn.warning { background: var(--orange); color: #fff; }
+        .btn.ghost { background: #f0f2f5; color: var(--text); }
+        .btn.ghost:hover { background: #e0e0e0; }
+        .btn.sm { padding: 5px 10px; font-size: 12px; }
+
+        /* Select status */
+        select.status_select {
+            padding: 4px 8px; border: 1px solid var(--border);
+            border-radius: 6px; font-size: 12px; outline: none; cursor: pointer;
+        }
+
+        /* Form */
+        .form_grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form_group { display: flex; flex-direction: column; gap: 6px; }
+        .form_group label { font-size: 13px; font-weight: 500; color: #555; }
+        .form_group input, .form_group select, .form_group textarea {
+            padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 14px; outline: none; transition: 0.2s;
+        }
+        .form_group input:focus, .form_group select:focus, .form_group textarea:focus {
+            border-color: var(--blue);
+        }
+        .form_group textarea { height: 80px; resize: none; }
+        .form_group.full { grid-column: 1 / -1; }
+
+        /* Product img in table */
+        .product_img { width: 45px; height: 45px; object-fit: contain; border-radius: 6px; border: 1px solid var(--border); }
+
+        /* Stars */
+        .stars_display i { color: #f5a623; font-size: 12px; }
+
+        /* Search */
+        .search_input {
+            padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 13px; outline: none; width: 220px;
+        }
+
+        /* Recent orders in dashboard */
+        .recent_table td, .recent_table th { padding: 10px 14px; }
+
+        /* Loading */
+        .loading { text-align: center; padding: 40px; color: #aaa; }
+
+        /* Modal */
+        .modal_overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+        }
+        .modal_overlay.open { display: flex; }
+        .modal_box {
+            background: var(--white); border-radius: 12px; padding: 28px;
+            width: 500px; max-height: 90vh; overflow-y: auto;
+        }
+        .modal_box h3 { font-size: 18px; margin-bottom: 20px; }
+        .modal_footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="login_screen">
+    <div class="login_box">
+        <h2>🛡️ Zayro Admin</h2>
+        <p>لوحة التحكم - للمسؤولين فقط</p>
+        <input type="text" id="admin_input" placeholder="الإيميل أو اسم المستخدم">
+        <input type="password" id="admin_pass" placeholder="كلمة المرور">
+        <button onclick="adminLogin()">دخول</button>
+        <p class="login_error" id="login_error">❌ ليس لديك صلاحية admin</p>
+    </div>
+</div>
+
+<!-- Layout -->
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">⚡ Zayro <span>Admin</span></div>
+        <nav>
+            <a href="#" class="active" onclick="showPage('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+            <a href="#" onclick="showPage('orders', this)"><i class="fa-solid fa-box"></i> الطلبات</a>
+            <a href="#" onclick="showPage('products', this)"><i class="fa-solid fa-tag"></i> المنتجات</a>
+            <a href="#" onclick="showPage('users', this)"><i class="fa-solid fa-users"></i> المستخدمون</a>
+            <a href="#" onclick="showPage('reviews', this)"><i class="fa-solid fa-star"></i> التقييمات</a>
+        </nav>
+        <div class="logout_btn" onclick="adminLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+        <div class="topbar">
+            <h2 id="page_title">Dashboard</h2>
+            <div class="admin_badge"><i class="fa-solid fa-shield-halved"></i> <span id="admin_name">Admin</span></div>
+        </div>
+
+        <div class="content">
+
+            <!-- Dashboard -->
+            <div class="page active" id="page_dashboard">
+                <div class="stats_grid">
+                    <div class="stat_card">
+                        <div class="icon blue"><i class="fa-solid fa-box"></i></div>
+                        <div><h3 id="stat_orders">-</h3><p>إجمالي الطلبات</p></div>
+                    </div>
+                    <div class="stat_card">
+                        <div class="icon green"><i class="fa-solid fa-dollar-sign"></i></div>
+                        <div><h3 id="stat_revenue">-</h3><p>إجمالي المبيعات</p></div>
+                    </div>
+                    <div class="stat_card">
+                        <div class="icon orange"><i class="fa-solid fa-users"></i></div>
+                        <div><h3 id="stat_users">-</h3><p>المستخدمون</p></div>
+                    </div>
+                    <div class="stat_card">
+                        <div class="icon red"><i class="fa-solid fa-star"></i></div>
+                        <div><h3 id="stat_reviews">-</h3><p>التقييمات</p></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card_header"><h3>آخر الطلبات</h3></div>
+                    <table class="recent_table">
+                        <thead><tr><th>رقم الطلب</th><th>العميل</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+                        <tbody id="recent_orders_body"><tr><td colspan="5" class="loading">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders -->
+            <div class="page" id="page_orders">
+                <div class="card">
+                    <div class="card_header">
+                        <h3>جميع الطلبات</h3>
+                        <input class="search_input" placeholder="بحث..." oninput="searchOrders(this.value)">
+                    </div>
+                    <table>
+                        <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الهاتف</th><th>المبلغ</th><th>الدفع</th><th>الحالة</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+                        <tbody id="orders_body"><tr><td colspan="8" class="loading">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products -->
+            <div class="page" id="page_products">
+                <div class="card" style="margin-bottom:20px;">
+                    <div class="card_header"><h3>إضافة منتج جديد</h3></div>
+                    <div style="padding:20px;">
+                        <div class="form_grid">
+                            <div class="form_group"><label>اسم المنتج</label><input id="p_title" placeholder="اسم المنتج"></div>
+                            <div class="form_group"><label>الفئة</label>
+                                <select id="p_category">
+                                    <option value="electronics">إلكترونيات</option>
+                                    <option value="mobiles">موبايلات</option>
+                                    <option value="appliances">أجهزة منزلية</option>
+                                    <option value="fashion">أحذية</option>
+                                    <option value="accessories">اكسسوار</option>
+                                    <option value="bags">حقائب</option>
+                                    <option value="sports">رياضة</option>
+                                    <option value="toys">هدايا</option>
+                                </select>
+                            </div>
+                            <div class="form_group"><label>السعر</label><input id="p_price" type="number" placeholder="السعر"></div>
+                            <div class="form_group"><label>السعر القديم (اختياري)</label><input id="p_old_price" type="number" placeholder="السعر القديم"></div>
+                            <div class="form_group full"><label>الوصف</label><textarea id="p_desc" placeholder="وصف المنتج"></textarea></div>
+                            <div class="form_group full"><label>صورة المنتج</label><input type="file" id="p_image" accept="image/*"></div>
+                        </div>
+                        <button class="btn primary" style="margin-top:16px;" onclick="addProduct()"><i class="fa-solid fa-plus"></i> إضافة المنتج</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card_header"><h3>قائمة المنتجات</h3><input class="search_input" placeholder="بحث..." oninput="searchProducts(this.value)"></div>
+                    <table>
+                        <thead><tr><th>الصورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>إجراء</th></tr></thead>
+                        <tbody id="products_body"><tr><td colspan="5" class="loading">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users -->
+            <div class="page" id="page_users">
+                <div class="card">
+                    <div class="card_header"><h3>المستخدمون</h3><input class="search_input" placeholder="بحث..." oninput="searchUsers(this.value)"></div>
+                    <table>
+                        <thead><tr><th>المستخدم</th><th>الإيميل</th><th>الصلاحية</th><th>تاريخ التسجيل</th><th>إجراء</th></tr></thead>
+                        <tbody id="users_body"><tr><td colspan="5" class="loading">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="page" id="page_reviews">
+                <div class="card">
+                    <div class="card_header"><h3>التقييمات</h3></div>
+                    <table>
+                        <thead><tr><th>المنتج</th><th>الاسم</th><th>التقييم</th><th>التعليق</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+                        <tbody id="reviews_body"><tr><td colspan="6" class="loading">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+const API = "http://localhost:3000";
+let adminToken = localStorage.getItem("admin_token");
+let allOrders = [], allProducts = [], allUsers = [];
+
+// ===== Login =====
+async function adminLogin() {
+    const input = document.getElementById("admin_input").value;
+    const password = document.getElementById("admin_pass").value;
+    const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input, password })
+    });
+    const data = await res.json();
+    if (data.token && data.isAdmin) {
+        localStorage.setItem("admin_token", data.token);
+        localStorage.setItem("admin_username", data.username);
+        adminToken = data.token;
+        document.getElementById("login_screen").style.display = "none";
+        document.getElementById("admin_name").innerText = data.username;
+        loadDashboard();
+    } else {
+        document.getElementById("login_error").style.display = "block";
+    }
+}
+
+function adminLogout() {
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_username");
+    location.reload();
+}
+
+// Check if already logged in
+if (adminToken) {
+    document.getElementById("login_screen").style.display = "none";
+    document.getElementById("admin_name").innerText = localStorage.getItem("admin_username") || "Admin";
+    loadDashboard();
+}
+
+function headers() {
+    return { "Content-Type": "application/json", "Authorization": `Bearer ${adminToken}` };
+}
+
+// ===== Navigation =====
+const titles = { dashboard: "Dashboard", orders: "الطلبات", products: "المنتجات", users: "المستخدمون", reviews: "التقييمات" };
+function showPage(name, el) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".sidebar nav a").forEach(a => a.classList.remove("active"));
+    document.getElementById(`page_${name}`).classList.add("active");
+    el.classList.add("active");
+    document.getElementById("page_title").innerText = titles[name];
+    if (name === "dashboard") loadDashboard();
+    if (name === "orders") loadOrders();
+    if (name === "products") loadProducts();
+    if (name === "users") loadUsers();
+    if (name === "reviews") loadReviews();
+}
+
+// ===== Dashboard =====
+async function loadDashboard() {
+    const res = await fetch(`${API}/api/admin/stats`, { headers: headers() });
+    const data = await res.json();
+    document.getElementById("stat_orders").innerText = data.totalOrders || 0;
+    document.getElementById("stat_revenue").innerText = `$${data.totalRevenue || 0}`;
+    document.getElementById("stat_users").innerText = data.totalUsers || 0;
+
+    const revRes = await fetch(`${API}/api/admin/reviews`, { headers: headers() });
+    const revs = await revRes.json();
+    document.getElementById("stat_reviews").innerText = revs.length || 0;
+
+    const tbody = document.getElementById("recent_orders_body");
+    if (!data.recentOrders?.length) { tbody.innerHTML = '<tr><td colspan="5" class="loading">لا توجد طلبات</td></tr>'; return; }
+    tbody.innerHTML = data.recentOrders.map(o => `
+        <tr>
+            <td>#${o._id.toString().slice(-6)}</td>
+            <td>${o.customerName || '-'}</td>
+            <td>$${o.total || 0}</td>
+            <td><span class="badge ${o.status?.toLowerCase()}">${o.status}</span></td>
+            <td>${new Date(o.createdAt).toLocaleDateString('ar')}</td>
+        </tr>`).join("");
+}
+
+// ===== Orders =====
+async function loadOrders() {
+    const res = await fetch(`${API}/api/admin/orders`, { headers: headers() });
+    allOrders = await res.json();
+    renderOrders(allOrders);
+}
+
+function renderOrders(orders) {
+    const tbody = document.getElementById("orders_body");
+    if (!orders.length) { tbody.innerHTML = '<tr><td colspan="8" class="loading">لا توجد طلبات</td></tr>'; return; }
+    tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td>#${o._id.toString().slice(-6)}</td>
+            <td>${o.customerName || '-'}</td>
+            <td>${o.phone || '-'}</td>
+            <td>$${o.total || 0}</td>
+            <td>${o.payment || '-'}</td>
+            <td>
+                <select class="status_select" onchange="updateOrderStatus('${o._id}', this.value)">
+                    <option ${o.status==='Processing'?'selected':''}>Processing</option>
+                    <option ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                    <option ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                </select>
+            </td>
+            <td>${new Date(o.createdAt).toLocaleDateString('ar')}</td>
+            <td><button class="btn danger sm" onclick="deleteOrder('${o._id}')"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`).join("");
+}
+
+function searchOrders(q) {
+    renderOrders(allOrders.filter(o => o.customerName?.toLowerCase().includes(q.toLowerCase()) || o.phone?.includes(q)));
+}
+
+async function updateOrderStatus(id, status) {
+    await fetch(`${API}/api/admin/orders/${id}`, { method: "PUT", headers: headers(), body: JSON.stringify({ status }) });
+}
+
+async function deleteOrder(id) {
+    if (!confirm("حذف الطلب؟")) return;
+    await fetch(`${API}/api/admin/orders/${id}`, { method: "DELETE", headers: headers() });
+    loadOrders();
+}
+
+// ===== Products =====
+async function loadProducts() {
+    const res = await fetch(`${API}/api/products`);
+    allProducts = await res.json();
+    renderProducts(allProducts);
+}
+
+function renderProducts(products) {
+    const tbody = document.getElementById("products_body");
+    if (!products.length) { tbody.innerHTML = '<tr><td colspan="5" class="loading">لا توجد منتجات</td></tr>'; return; }
+    tbody.innerHTML = products.map(p => `
+        <tr>
+            <td><img class="product_img" src="${p.image ? `${API}${p.image}` : '/shoop/img/placeholder.jpg'}" onerror="this.src='/shoop/zayro.png'"></td>
+            <td>${p.title}</td>
+            <td>${p.category || '-'}</td>
+            <td>$${p.price}</td>
+            <td><button class="btn danger sm" onclick="deleteProduct('${p._id}')"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`).join("");
+}
+
+function searchProducts(q) {
+    renderProducts(allProducts.filter(p => p.title?.toLowerCase().includes(q.toLowerCase())));
+}
+
+async function addProduct() {
+    const title = document.getElementById("p_title").value.trim();
+    const price = document.getElementById("p_price").value;
+    const old_price = document.getElementById("p_old_price").value;
+    const category = document.getElementById("p_category").value;
+    const description = document.getElementById("p_desc").value;
+    const imageFile = document.getElementById("p_image").files[0];
+
+    if (!title || !price) { alert("الاسم والسعر مطلوبان"); return; }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("price", price);
+    if (old_price) formData.append("old_price", old_price);
+    formData.append("category", category);
+    formData.append("description", description);
+    if (imageFile) formData.append("image", imageFile);
+
+    const res = await fetch(`${API}/api/admin/products`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${adminToken}` },
+        body: formData
+    });
+    const data = await res.json();
+    if (data.product) {
+        alert("✅ تم إضافة المنتج");
+        document.getElementById("p_title").value = "";
+        document.getElementById("p_price").value = "";
+        document.getElementById("p_old_price").value = "";
+        document.getElementById("p_desc").value = "";
+        document.getElementById("p_image").value = "";
+        loadProducts();
+    }
+}
+
+async function deleteProduct(id) {
+    if (!confirm("حذف المنتج؟")) return;
+    await fetch(`${API}/api/admin/products/${id}`, { method: "DELETE", headers: headers() });
+    loadProducts();
+}
+
+// ===== Users =====
+async function loadUsers() {
+    const res = await fetch(`${API}/api/admin/users`, { headers: headers() });
+    allUsers = await res.json();
+    renderUsers(allUsers);
+}
+
+function renderUsers(users) {
+    const tbody = document.getElementById("users_body");
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="loading">لا يوجد مستخدمون</td></tr>'; return; }
+    tbody.innerHTML = users.map(u => `
+        <tr>
+            <td>${u.username}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.isAdmin ? 'admin' : 'user'}">${u.isAdmin ? 'Admin' : 'User'}</span></td>
+            <td>${new Date(u.createdAt).toLocaleDateString('ar')}</td>
+            <td style="display:flex;gap:6px;">
+                <button class="btn ghost sm" onclick="toggleAdmin('${u._id}')">${u.isAdmin ? 'إزالة Admin' : 'ترقية Admin'}</button>
+                <button class="btn danger sm" onclick="deleteUser('${u._id}')"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>`).join("");
+}
+
+function searchUsers(q) {
+    renderUsers(allUsers.filter(u => u.username?.toLowerCase().includes(q.toLowerCase()) || u.email?.includes(q)));
+}
+
+async function toggleAdmin(id) {
+    await fetch(`${API}/api/admin/users/${id}/toggle-admin`, { method: "PUT", headers: headers() });
+    loadUsers();
+}
+
+async function deleteUser(id) {
+    if (!confirm("حذف المستخدم؟")) return;
+    await fetch(`${API}/api/admin/users/${id}`, { method: "DELETE", headers: headers() });
+    loadUsers();
+}
+
+// ===== Reviews =====
+async function loadReviews() {
+    const res = await fetch(`${API}/api/admin/reviews`, { headers: headers() });
+    const reviews = await res.json();
+    const tbody = document.getElementById("reviews_body");
+    if (!reviews.length) { tbody.innerHTML = '<tr><td colspan="6" class="loading">لا توجد تقييمات</td></tr>'; return; }
+    tbody.innerHTML = reviews.map(r => {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) stars += `<i class="fa-${i <= r.rating ? 'solid' : 'regular'} fa-star" style="color:#f5a623;font-size:12px;"></i>`;
+        return `
+        <tr>
+            <td>منتج #${r.productId}</td>
+            <td>${r.name}</td>
+            <td>${stars}</td>
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.text}</td>
+            <td>${r.date}</td>
+            <td><button class="btn danger sm" onclick="deleteReview('${r._id}')"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`}).join("");
+}
+
+async function deleteReview(id) {
+    if (!confirm("حذف التقييم؟")) return;
+    await fetch(`${API}/api/admin/reviews/${id}`, { method: "DELETE", headers: headers() });
+    loadReviews();
+}
+
+// Enter key for login
+document.getElementById("admin_pass").addEventListener("keydown", e => {
+    if (e.key === "Enter") adminLogin();
+});
+</script>
+</body>
+</html>

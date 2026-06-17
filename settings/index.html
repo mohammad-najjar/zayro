@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zayro - Settings</title>
+    <link rel="icon" href="/shoop/zayro.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Inter", sans-serif; }
+        body { background: #f3f3f3; min-height: 100vh; }
+
+        .top_bar { background: #000; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
+        .top_bar a { color: #fff; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .top_bar img { height: 40px; }
+
+        .settings_container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        .settings_title { font-size: 22px; font-weight: bold; margin-bottom: 25px; color: #111; display: flex; align-items: center; gap: 10px; }
+        .settings_title i { color: #ff9900; }
+
+        .settings_card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+            margin-bottom: 20px;
+        }
+        .settings_card_header {
+            padding: 18px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .settings_card_header i { font-size: 18px; color: #ff9900; }
+        .settings_card_header h3 { font-size: 16px; color: #111; }
+        .settings_card_body { padding: 25px; }
+
+        .form_group { margin-bottom: 18px; }
+        .form_group label { display: block; font-size: 13px; color: #666; font-weight: 600; margin-bottom: 7px; }
+        .form_group input, .form_group select {
+            width: 100%;
+            padding: 11px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form_group input:focus, .form_group select:focus { border-color: #000; }
+
+        .form_row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .save_btn {
+            background: #000;
+            color: #fff;
+            padding: 11px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .save_btn:hover { background: #333; }
+
+        .danger_btn {
+            background: #e51a1a;
+            color: #fff;
+            padding: 11px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .danger_btn:hover { background: #c41515; }
+
+        .success_msg { display: none; color: green; font-size: 13px; margin-top: 10px; font-weight: bold; }
+        .error_msg { display: none; color: #e51a1a; font-size: 13px; margin-top: 10px; font-weight: bold; }
+
+        /* Toggle Switch */
+        .toggle_row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .toggle_row:last-child { border-bottom: none; }
+        .toggle_info h4 { font-size: 14px; color: #222; margin-bottom: 3px; }
+        .toggle_info p { font-size: 12px; color: #888; }
+        .toggle {
+            position: relative;
+            width: 46px;
+            height: 25px;
+        }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle_slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ccc;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+        .toggle_slider:before {
+            content: "";
+            position: absolute;
+            width: 19px; height: 19px;
+            left: 3px; bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle input:checked + .toggle_slider { background: #000; }
+        .toggle input:checked + .toggle_slider:before { transform: translateX(21px); }
+
+        /* Danger Zone */
+        .danger_zone { border: 1px solid #ffdddd; border-radius: 15px; overflow: hidden; margin-bottom: 20px; }
+        .danger_zone .settings_card_header { background: #fff5f5; border-bottom: 1px solid #ffdddd; }
+        .danger_zone .settings_card_header i { color: #e51a1a; }
+        .danger_zone .settings_card_header h3 { color: #e51a1a; }
+        .danger_item { display: flex; justify-content: space-between; align-items: center; padding: 18px 25px; border-bottom: 1px solid #fff5f5; }
+        .danger_item:last-child { border-bottom: none; }
+        .danger_item_info h4 { font-size: 14px; color: #333; margin-bottom: 4px; }
+        .danger_item_info p { font-size: 12px; color: #999; }
+
+        /* Modal */
+        .modal_overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal_overlay.active { display: flex; }
+        .modal_box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .modal_box h3 { font-size: 18px; margin-bottom: 10px; color: #111; }
+        .modal_box p { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .modal_box input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 15px; }
+        .modal_btns { display: flex; gap: 10px; justify-content: flex-end; }
+        .cancel_btn { background: #f3f3f3; color: #333; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+
+        @media (max-width: 600px) { .form_row { grid-template-columns: 1fr; } .top_bar { padding: 15px 20px; } }
+    </style>
+</head>
+<body>
+
+<div class="top_bar">
+    <a href="/"><i class="fa-solid fa-arrow-left"></i> Back to Store</a>
+    <img src="/shoop/zayrowhite.png" alt="Zayro">
+</div>
+
+<div class="settings_container">
+    <div class="settings_title">
+        <i class="fa-solid fa-gear"></i> Settings
+    </div>
+
+    <!-- Change Password -->
+    <div class="settings_card">
+        <div class="settings_card_header">
+            <i class="fa-solid fa-lock"></i>
+            <h3>Change Password</h3>
+        </div>
+        <div class="settings_card_body">
+            <div class="form_group">
+                <label>Current Password</label>
+                <input type="password" id="current_password" placeholder="Enter current password">
+            </div>
+            <div class="form_row">
+                <div class="form_group">
+                    <label>New Password</label>
+                    <input type="password" id="new_password" placeholder="Enter new password">
+                </div>
+                <div class="form_group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirm_password" placeholder="Confirm new password">
+                </div>
+            </div>
+            <button class="save_btn" onclick="changePassword()">
+                <i class="fa-solid fa-floppy-disk"></i> Update Password
+            </button>
+            <p class="success_msg" id="pass_success">✅ Password updated successfully!</p>
+            <p class="error_msg" id="pass_error"></p>
+        </div>
+    </div>
+
+    <!-- Change Email -->
+    <div class="settings_card">
+        <div class="settings_card_header">
+            <i class="fa-solid fa-envelope"></i>
+            <h3>Change Email</h3>
+        </div>
+        <div class="settings_card_body">
+            <div class="form_group">
+                <label>Current Email</label>
+                <input type="email" id="current_email" disabled>
+            </div>
+            <div class="form_group">
+                <label>New Email</label>
+                <input type="email" id="new_email" placeholder="Enter new email">
+            </div>
+            <div class="form_group">
+                <label>Password (to confirm)</label>
+                <input type="password" id="email_password" placeholder="Enter your password">
+            </div>
+            <button class="save_btn" onclick="changeEmail()">
+                <i class="fa-solid fa-floppy-disk"></i> Update Email
+            </button>
+            <p class="success_msg" id="email_success">✅ Email updated successfully!</p>
+            <p class="error_msg" id="email_error"></p>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings_card">
+        <div class="settings_card_header">
+            <i class="fa-solid fa-bell"></i>
+            <h3>Notifications</h3>
+        </div>
+        <div class="settings_card_body">
+            <div class="toggle_row">
+                <div class="toggle_info">
+                    <h4>Order Updates</h4>
+                    <p>Get notified about your order status</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="notif_orders" checked onchange="saveNotifSettings()">
+                    <span class="toggle_slider"></span>
+                </label>
+            </div>
+            <div class="toggle_row">
+                <div class="toggle_info">
+                    <h4>Promotions & Deals</h4>
+                    <p>Receive offers and discount alerts</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="notif_promos" checked onchange="saveNotifSettings()">
+                    <span class="toggle_slider"></span>
+                </label>
+            </div>
+            <div class="toggle_row">
+                <div class="toggle_info">
+                    <h4>New Arrivals</h4>
+                    <p>Be the first to know about new products</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="notif_new" onchange="saveNotifSettings()">
+                    <span class="toggle_slider"></span>
+                </label>
+            </div>
+            <div class="toggle_row">
+                <div class="toggle_info">
+                    <h4>Security Alerts</h4>
+                    <p>Get alerts for suspicious activity</p>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="notif_security" checked onchange="saveNotifSettings()">
+                    <span class="toggle_slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="settings_card">
+        <div class="settings_card_header">
+            <i class="fa-solid fa-palette"></i>
+            <h3>Appearance</h3>
+        </div>
+        <div class="settings_card_body">
+            <div class="form_group">
+                <label>Language</label>
+                <select id="lang_select" onchange="saveAppearance()">
+                    <option value="en">English</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+            <div class="form_group">
+                <label>Currency</label>
+                <select id="currency_select" onchange="saveAppearance()">
+                    <option value="usd">USD ($)</option>
+                    <option value="eur">EUR (€)</option>
+                    <option value="ils">ILS (₪)</option>
+                    <option value="jod">JOD (د.أ)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="danger_zone">
+        <div class="settings_card_header">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Danger Zone</h3>
+        </div>
+        <div class="danger_item">
+            <div class="danger_item_info">
+                <h4>Deactivate Account</h4>
+                <p>Temporarily disable your account</p>
+            </div>
+            <button class="danger_btn" onclick="showDeactivateModal()" style="background:#ff9900;">
+                <i class="fa-solid fa-pause"></i> Deactivate
+            </button>
+        </div>
+        <div class="danger_item">
+            <div class="danger_item_info">
+                <h4>Delete Account</h4>
+                <p>Permanently delete your account and all data</p>
+            </div>
+            <button class="danger_btn" onclick="showDeleteModal()">
+                <i class="fa-solid fa-trash"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal_overlay" id="delete_modal">
+    <div class="modal_box">
+        <h3>🗑️ Delete Account</h3>
+        <p>This action is permanent and cannot be undone. Type your password to confirm.</p>
+        <input type="password" id="delete_password" placeholder="Enter your password">
+        <div class="modal_btns">
+            <button class="cancel_btn" onclick="closeModal('delete_modal')">Cancel</button>
+            <button class="danger_btn" onclick="deleteAccount()"><i class="fa-solid fa-trash"></i> Delete</button>
+        </div>
+        <p class="error_msg" id="delete_error" style="margin-top:10px;"></p>
+    </div>
+</div>
+
+<!-- Deactivate Modal -->
+<div class="modal_overlay" id="deactivate_modal">
+    <div class="modal_box">
+        <h3>⏸️ Deactivate Account</h3>
+        <p>Your account will be disabled. You can reactivate it by logging in again.</p>
+        <div class="modal_btns">
+            <button class="cancel_btn" onclick="closeModal('deactivate_modal')">Cancel</button>
+            <button class="save_btn" style="background:#ff9900;" onclick="deactivateAccount()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "/login";
+
+    // جيب الإيميل الحالي
+    async function loadSettings() {
+        const res = await fetch("http://localhost:3000/api/profile", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const user = await res.json();
+        document.getElementById("current_email").value = user.email || "";
+
+        // تحميل إعدادات الإشعارات
+        const notifs = JSON.parse(localStorage.getItem("notif_settings") || "{}");
+        if (notifs.orders !== undefined) document.getElementById("notif_orders").checked = notifs.orders;
+        if (notifs.promos !== undefined) document.getElementById("notif_promos").checked = notifs.promos;
+        if (notifs.new !== undefined) document.getElementById("notif_new").checked = notifs.new;
+        if (notifs.security !== undefined) document.getElementById("notif_security").checked = notifs.security;
+
+        // تحميل إعدادات الـ appearance
+        const appearance = JSON.parse(localStorage.getItem("appearance_settings") || "{}");
+        if (appearance.lang) document.getElementById("lang_select").value = appearance.lang;
+        if (appearance.currency) document.getElementById("currency_select").value = appearance.currency;
+    }
+
+    // تغيير الباسورد
+    async function changePassword() {
+        const current = document.getElementById("current_password").value;
+        const newPass = document.getElementById("new_password").value;
+        const confirm = document.getElementById("confirm_password").value;
+
+        if (!current || !newPass || !confirm) {
+            showError("pass_error", "Please fill all fields");
+            return;
+        }
+        if (newPass !== confirm) {
+            showError("pass_error", "New passwords don't match ❌");
+            return;
+        }
+        if (newPass.length < 6) {
+            showError("pass_error", "Password must be at least 6 characters");
+            return;
+        }
+
+        const res = await fetch("http://localhost:3000/api/change-password", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ currentPassword: current, newPassword: newPass })
+        });
+        const data = await res.json();
+
+        if (data.message.includes("✅")) {
+            showSuccess("pass_success");
+            document.getElementById("current_password").value = "";
+            document.getElementById("new_password").value = "";
+            document.getElementById("confirm_password").value = "";
+        } else {
+            showError("pass_error", data.message);
+        }
+    }
+
+    // تغيير الإيميل
+    async function changeEmail() {
+        const newEmail = document.getElementById("new_email").value;
+        const password = document.getElementById("email_password").value;
+
+        if (!newEmail || !password) {
+            showError("email_error", "Please fill all fields");
+            return;
+        }
+
+        const res = await fetch("http://localhost:3000/api/change-email", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ newEmail, password })
+        });
+        const data = await res.json();
+
+        if (data.message.includes("✅")) {
+            showSuccess("email_success");
+            document.getElementById("current_email").value = newEmail;
+            document.getElementById("new_email").value = "";
+            document.getElementById("email_password").value = "";
+        } else {
+            showError("email_error", data.message);
+        }
+    }
+
+    // حفظ إعدادات الإشعارات
+    function saveNotifSettings() {
+        const settings = {
+            orders: document.getElementById("notif_orders").checked,
+            promos: document.getElementById("notif_promos").checked,
+            new: document.getElementById("notif_new").checked,
+            security: document.getElementById("notif_security").checked
+        };
+        localStorage.setItem("notif_settings", JSON.stringify(settings));
+    }
+
+    // حفظ الـ appearance
+    function saveAppearance() {
+        const settings = {
+            lang: document.getElementById("lang_select").value,
+            currency: document.getElementById("currency_select").value
+        };
+        localStorage.setItem("appearance_settings", JSON.stringify(settings));
+    }
+
+    // حذف الحساب
+    async function deleteAccount() {
+        const password = document.getElementById("delete_password").value;
+        if (!password) { showError("delete_error", "Please enter your password"); return; }
+
+        const res = await fetch("http://localhost:3000/api/delete-account", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+            body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+
+        if (data.message.includes("✅")) {
+            localStorage.clear();
+            window.location.href = "/";
+        } else {
+            showError("delete_error", data.message);
+        }
+    }
+
+    // تعطيل الحساب
+    function deactivateAccount() {
+        localStorage.clear();
+        alert("Account deactivated. You can reactivate by logging in again.");
+        window.location.href = "/";
+    }
+
+    function showDeleteModal() { document.getElementById("delete_modal").classList.add("active"); }
+    function showDeactivateModal() { document.getElementById("deactivate_modal").classList.add("active"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+
+    function showSuccess(id) {
+        const el = document.getElementById(id);
+        el.style.display = "block";
+        setTimeout(() => el.style.display = "none", 3000);
+    }
+    function showError(id, msg) {
+        const el = document.getElementById(id);
+        el.innerText = msg;
+        el.style.display = "block";
+        setTimeout(() => el.style.display = "none", 4000);
+    }
+
+    loadSettings();
+</script>
+</body>
+</html>
