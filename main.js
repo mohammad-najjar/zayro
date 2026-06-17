@@ -1,22 +1,23 @@
 let category_nav_list = document.querySelector(".category_nav_list");
 
 function Open_Categ_list(){
-    category_nav_list.classList.toggle("active")
+    if(category_nav_list) category_nav_list.classList.toggle("active");
 }
 
 let nav_links = document.querySelector(".nav_links")
 
 function open_Menu() {
-    nav_links.classList.toggle("active")
+    if(nav_links) nav_links.classList.toggle("active");
 }
 
 var cart = document.querySelector('.cart');
 
 function open_close_cart() {
-    cart.classList.toggle("active")
+    if(cart) cart.classList.toggle("active");
 }
 
-fetch('/shoop/products.json')
+// جلب المنتجات من السيرفر الأونلاين بدلاً من الفولدر المحلي القديم
+fetch('https://zayro-km0j.onrender.com/api/products')
 .then(response => response.json())
 .then(data => {
     const addToCartButtons = document.querySelectorAll(".btn_add_cart")
@@ -24,15 +25,25 @@ fetch('/shoop/products.json')
         button.addEventListener("click", (event) => {
             const productId = parseInt(event.target.getAttribute('data-id'))
             const selectedProduct = data.find(product => product.id == productId)
-            addToCart(selectedProduct)
-            const allMatchingButtons = document.querySelectorAll(`.btn_add_cart[data-id="${productId}"]`)
-            allMatchingButtons.forEach(btn => {
-                btn.classList.add("active")
-                btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item in cart`
-            })
+            if(selectedProduct) {
+                addToCart(selectedProduct)
+                const allMatchingButtons = document.querySelectorAll(`.btn_add_cart[data-id="${productId}"]`)
+                allMatchingButtons.forEach(btn => {
+                    btn.classList.add("active")
+                    btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item in cart`
+                })
+            }
         })
     })
 })
+.catch(err => {
+    // في حال واجه السيرفر تأخيراً في الاستيقاظ (Sleep)، نحاول جلب الملف المحلي كبديل احتياطي
+    fetch('products.json')
+    .then(res => res.json())
+    .then(data => {
+         // كود التعامل مع الأزرار الاحتياطية هنا إذا لزم الأمر
+    });
+});
 
 
 function addToCart(product) {
@@ -44,6 +55,8 @@ function addToCart(product) {
 
 function updateCart() {
     const cartItemsContainer = document.getElementById("cart_items")
+    if(!cartItemsContainer) return;
+    
     const cart = JSON.parse(localStorage.getItem('cart')) || []
 
     var total_Price = 0
@@ -55,9 +68,10 @@ function updateCart() {
         total_Price += total_Price_item
         total_count += item.quantity
 
+        // تم حذف مسار /shoop/ من الصورة لتقرأ من بيئة الاستضافة مباشرة
         cartItemsContainer.innerHTML += `
             <div class="item_cart">
-                <img src="/shoop/${item.img}" alt="">
+                <img src="${item.img}" alt="">
                 <div class="content">
                     <h4>${item.name}</h4>
                     <p class="price_cart">$${total_Price_item}</p>
@@ -72,9 +86,9 @@ function updateCart() {
         `
     })
 
-    document.querySelector('.price_cart_toral').innerHTML = `$ ${total_Price}`
-    document.querySelector('.Count_item_cart').innerHTML = total_count
-    document.querySelector('.count_item_header').innerHTML = total_count
+    if(document.querySelector('.price_cart_toral')) document.querySelector('.price_cart_toral').innerHTML = `$ ${total_Price}`
+    if(document.querySelector('.Count_item_cart')) document.querySelector('.Count_item_cart').innerHTML = total_count
+    if(document.querySelector('.count_item_header')) document.querySelector('.count_item_header').innerHTML = total_count
 
     document.querySelectorAll(".Increase_quantity").forEach(button => {
         button.addEventListener("click", (event) => {
@@ -117,7 +131,7 @@ function removeFromCart(index) {
     const removeProduct = cart.splice(index, 1)[0]
     localStorage.setItem('cart', JSON.stringify(cart))
     updateCart()
-    updateButtonsState(removeProduct.id)
+    if(removeProduct) updateButtonsState(removeProduct.id)
 }
 
 function updateButtonsState(productId) {
@@ -161,6 +175,7 @@ updateWishlistCount();
 
 function open_close_wishlist() {
     const wishlistSide = document.getElementById("wishlist_side");
+    if(!wishlistSide) return;
     wishlistSide.classList.toggle("active");
     if (wishlistSide.classList.contains("active")) {
         updateWishlist();
@@ -170,8 +185,10 @@ function open_close_wishlist() {
 function updateWishlist() {
     const wishlistContainer = document.getElementById("items_in_wishlist");
     const countHeader = document.querySelector(".wishlist_count_header");
+    if(!wishlistContainer) return;
 
-    fetch('/shoop/products.json')
+    // جلب المفضلة أيضاً من السيرفر الأونلاين
+    fetch('https://zayro-km0j.onrender.com/api/products')
         .then(response => response.json())
         .then(products => {
             let itemsHtml = "";
@@ -182,7 +199,7 @@ function updateWishlist() {
                     count++;
                     itemsHtml += `
                         <div class="item_cart">
-                            <img src="/shoop/${product.img}" alt="">
+                            <img src="${product.img}" alt="">
                             <div class="content">
                                 <h4>${product.name}</h4>
                                 <p class="price_cart">$${product.price}</p>
@@ -196,7 +213,7 @@ function updateWishlist() {
             });
 
             wishlistContainer.innerHTML = itemsHtml || "<p style='text-align:center; margin-top:20px;'>No items in wishlist</p>";
-            countHeader.innerText = count;
+            if(countHeader) countHeader.innerText = count;
         });
 }
 
@@ -231,6 +248,7 @@ if (checkoutForm) {
             });
             alert("Order sent successfully ✅");
             localStorage.removeItem("cart");
+            updateCart();
         } catch (error) {
             alert("Error sending order ❌");
         }
