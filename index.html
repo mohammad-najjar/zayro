@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=500, user-scalable=no">
-    <link rel="icon" href="/shoop/zayro.png">
+    <link rel="icon" href="zayrowhite.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -214,7 +214,7 @@
     <div class="bottom_cart">
         <div class="total"><p>المجموع</p><p class="price_cart_toral">$0</p></div>
         <div class="button_cart">
-            <a href="/shoop/checkout.html" class="btn_cart btn">الدفع</a>
+            <a href="checkout.html" class="btn_cart btn">الدفع</a>
             <span onclick="open_close_cart()" class="btn_cart trans_bg">تسوق أكثر</span>
         </div>
     </div>
@@ -222,16 +222,13 @@
 
 <header>
     <div class="header_row1">
-        <!-- لوغو -->
-        <a href="/" class="logo"><img src="/shoop/zayrowhite.png" alt="ZAYRO"></a>
+        <a href="./" class="logo"><img src="zayrowhite.png" alt="ZAYRO"></a>
 
-        <!-- بحث -->
         <form class="search_box" onsubmit="event.preventDefault(); applyFilter();">
             <input type="text" id="search" placeholder="البحث في Zayro">
             <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
 
-        <!-- أيقونات -->
         <div class="h_icons">
             <div class="icon" onclick="open_close_wishlist()">
                 <i class="fa-regular fa-heart"></i>
@@ -241,7 +238,6 @@
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="count count_item_header">0</span>
             </div>
-            <!-- Profile -->
             <div class="profile_btn" id="profile_btn" style="display:none;">
                 <div class="profile_icon" id="profile_icon" onclick="toggleProfileDropdown()">
                     <i class="fa-solid fa-circle-user"></i>
@@ -253,21 +249,20 @@
                         <h4 id="profile_username">User</h4>
                     </div>
                     <div class="dropdown_links">
-                        <a href="/profile-page"><i class="fa-solid fa-user"></i> ملفي</a>
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> ملفي</a>
                         <a href="#" onclick="open_close_wishlist()"><i class="fa-solid fa-heart"></i> المفضلة</a>
-                        <a href="/account"><i class="fa-solid fa-gear"></i> الإعدادات</a>
+                        <a href="account"><i class="fa-solid fa-gear"></i> الإعدادات</a>
                         <button class="logout_btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</button>
                     </div>
                 </div>
             </div>
             <div id="auth_buttons" style="display:flex; gap:8px;">
-                <a href="/login" style="background:#000;color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;">دخول</a>
-                <a href="/signup" style="border:1px solid #000;color:#000;padding:6px 12px;border-radius:4px;font-size:12px;">تسجيل</a>
+                <a href="login/" style="background:#000;color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;">دخول</a>
+                <a href="signup/" style="border:1px solid #000;color:#000;padding:6px 12px;border-radius:4px;font-size:12px;">تسجيل</a>
             </div>
         </div>
     </div>
 
-    <!-- فئات -->
     <div class="header_row2">
         <a href="#" class="active" onclick="filterCat('all',this)">الكل</a>
         <a href="#" onclick="filterCat('mobiles',this)">موبايلات</a>
@@ -282,20 +277,18 @@
     </div>
 </header>
 
-<!-- Hero Slider -->
 <div class="hero_slider">
     <div class="swiper heroSwiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide"><img src="/shoop/img/banner3_1.png" alt=""></div>
-            <div class="swiper-slide"><img src="/shoop/img/banner3_2.png" alt=""></div>
-            <div class="swiper-slide"><img src="/shoop/img/banner3_3.png" alt=""></div>
-            <div class="swiper-slide"><img src="/shoop/img/banner3_4.png" alt=""></div>
+            <div class="swiper-slide"><img src="banner3_1.png" alt=""></div>
+            <div class="swiper-slide"><img src="banner3_2.png" alt=""></div>
+            <div class="swiper-slide"><img src="banner3_3.png" alt=""></div>
+            <div class="swiper-slide"><img src="banner3_4.png" alt=""></div>
         </div>
         <div class="swiper-pagination"></div>
     </div>
 </div>
 
-<!-- Products -->
 <div class="all_products_section">
     <div class="container">
         <div id="all_products_grid"></div>
@@ -305,7 +298,7 @@
 <footer>
     <div class="container">
         <div class="big_row">
-            <img class="logo_footer" src="/shoop/zayroblack.png" alt="">
+            <img class="logo_footer" src="zayroblack.png" alt="">
             <div class="icons_footer">
                 <a href="#"><i class="fa-solid fa-phone"></i></a>
                 <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
@@ -320,7 +313,7 @@
     <div class="bottom_footer">
         <div class="container">
             <p>&copy; Developed by <a href="https://github.com/mohammad-najjar" target="_blank"><span style="color:#b4b216;">Mohammad Najjar</span></a></p>
-            <div class="payment_img"><img src="/shoop/img/payment_method.png" alt=""></div>
+            <div class="payment_img"><img src="payment_method.png" alt=""></div>
         </div>
     </div>
 </footer>
@@ -345,9 +338,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="/shoop/JS/swiper.js"></script>
-<script src="/shoop/JS/items_home.js"></script>
-<script src="/shoop/JS/main.js"></script>
+<script src="swiper.js"></script>
+<script src="items_home.js"></script>
+<script src="server.js"></script>
 <script>
     new Swiper(".heroSwiper", {
         loop: true,
