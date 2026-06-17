@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zayro - Product Details</title>
+    <link rel="icon" href="/shoop/zayro.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="/shoop/style.css">
+    <style>
+        body { padding-top: 40px; background: #f8f8f8; }
+        .back_btn { display: inline-flex; align-items: center; gap: 8px; margin: 30px 0 20px; color: #000; font-weight: bold; cursor: pointer; }
+        .back_btn:hover { text-decoration: underline; }
+        .product_details { display: flex; gap: 40px; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); margin-bottom: 40px; }
+        .image_item { width: 45%; border: 1px solid #e5e5e5; border-radius: 10px; padding: 20px; display: flex; align-items: center; justify-content: center; background: #fafafa; }
+        .image_item img { width: 100%; max-width: 380px; object-fit: contain; max-height: 380px; }
+        .details_text { width: 55%; }
+        .details_text h1 { font-size: 22px; margin-bottom: 12px; line-height: 1.4; }
+        .details_text .price { color: #000; font-size: 30px; font-weight: bold; margin-bottom: 8px; }
+        .old_price_detail { color: #999; text-decoration: line-through; font-size: 16px; margin-bottom: 15px; }
+        .details_text .description { color: #555; line-height: 1.8; margin-bottom: 20px; font-size: 15px; }
+        .option_section { margin-bottom: 18px; }
+        .option_section h4 { font-size: 15px; margin-bottom: 10px; color: #333; }
+        .options_list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .option_btn { padding: 7px 16px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 14px; background: #fff; transition: 0.2s; }
+        .option_btn:hover, .option_btn.active { border-color: #000; background: #000; color: #fff; }
+        .divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+        .buttons { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+        .btn_add_cart_detail { background: #000; color: #fff; padding: 13px 25px; border: 2px solid #000; border-radius: 6px; font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn_add_cart_detail:hover { background: #333; }
+        .btn_wishlist { background: #fff; color: #000; padding: 13px 25px; border: 2px solid #000; border-radius: 6px; font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn_wishlist:hover, .btn_wishlist.active { background: #000; color: #fff; }
+        .added_msg { display: none; color: green; margin-top: 12px; font-weight: bold; }
+
+        /* Cart */
+        .cart { position: fixed; top: 0; right: -350px; bottom: 0; z-index: 1100; background: #fff; border-left: 1px solid #e5e5e5; width: 350px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s ease-in-out; }
+        .cart.active { right: 0; }
+        .cart .top_cart { display: flex; align-items: center; justify-content: space-between; }
+        .cart .top_cart .close_cart i { cursor: pointer; font-size: 35px; }
+        .cart .items_in_cart { padding: 20px 0; border-block: 1px solid #e5e5e5; margin-block: 20px; height: 100%; overflow-y: auto; }
+        .cart .bottom_cart .total { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .cart .bottom_cart .button_cart { display: flex; gap: 20px; }
+        .btn_cart { text-transform: uppercase; border: 2px solid #000; padding: 10px 15px; cursor: pointer; border-radius: 5px; transition: 0.3s; background: #000; color: #fff; text-decoration: none; }
+        .trans_bg { background: transparent; color: #000; }
+
+        /* Reviews */
+        .reviews_section { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08); margin-bottom: 40px; }
+        .reviews_section h2 { font-size: 20px; margin-bottom: 20px; }
+        .add_review { margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #eee; }
+        .add_review h3 { font-size: 16px; margin-bottom: 12px; }
+        .star_input { display: flex; gap: 5px; margin-bottom: 15px; flex-direction: row-reverse; justify-content: flex-end; }
+        .star_input input { display: none; }
+        .star_input label { font-size: 30px; color: #ddd; cursor: pointer; transition: 0.2s; }
+        .star_input label:hover,
+        .star_input label:hover ~ label,
+        .star_input input:checked ~ label { color: #f5a623; }
+        .review_name_input, .review_text_input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 10px; outline: none; }
+        .review_text_input { height: 80px; resize: none; }
+        .submit_review_btn { background: #000; color: #fff; padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; transition: 0.3s; }
+        .submit_review_btn:hover { background: #333; }
+        .submit_review_btn:disabled { background: #aaa; cursor: not-allowed; }
+        .reviews_list { display: flex; flex-direction: column; gap: 15px; }
+        .review_item { padding: 15px; border: 1px solid #eee; border-radius: 8px; background: #fafafa; }
+        .review_item .review_header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .review_item .reviewer_name { font-weight: bold; font-size: 15px; }
+        .review_item .review_stars i { color: #f5a623; font-size: 14px; }
+        .review_item .review_text { color: #555; font-size: 14px; line-height: 1.6; }
+        .review_item .review_date { color: #aaa; font-size: 12px; margin-top: 5px; }
+        .no_reviews { color: #aaa; text-align: center; padding: 20px 0; }
+        .avg_rating { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .avg_rating .big_num { font-size: 48px; font-weight: bold; color: #000; }
+        .avg_rating .stars_avg i { color: #f5a623; font-size: 20px; }
+        .avg_rating .total_reviews { color: #888; font-size: 14px; }
+        .product_rating { display: flex; align-items: center; gap: 6px; margin-bottom: 15px; }
+        .product_rating i { color: #f5a623; font-size: 16px; }
+        .product_rating span { color: #888; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .product_details { flex-direction: column; }
+            .image_item, .details_text { width: 100%; }
+            .buttons { flex-direction: column; }
+            .cart { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cart" id="cart_sidebar">
+    <div class="top_cart">
+        <h3>Cart Items : <span class="Count_item_cart">0</span></h3>
+        <span onclick="open_close_cart()" class="close_cart"><i class="fa-regular fa-circle-xmark"></i></span>
+    </div>
+    <div class="items_in_cart" id="cart_items"></div>
+    <div class="bottom_cart">
+        <div class="total"><p>Subtotal</p><p class="price_cart_toral">$0</p></div>
+        <div class="button_cart">
+            <a href="/shoop/checkout.html" class="btn_cart">Checkout</a>
+            <span onclick="open_close_cart()" class="btn_cart trans_bg">Shop More</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <span class="back_btn" onclick="history.back()">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </span>
+
+    <div class="product_details">
+        <div class="image_item">
+            <img id="main_img" src="" alt="">
+        </div>
+        <div class="details_text">
+            <h1 id="product_name"></h1>
+
+            <!-- تقييم المنتج -->
+            <div class="product_rating" id="product_rating_display"></div>
+
+            <p class="price" id="product_price"></p>
+            <p class="old_price_detail" id="product_old_price"></p>
+            <p class="description" id="product_desc"></p>
+            <hr class="divider">
+            <div class="option_section" id="colors_section">
+                <h4>Color:</h4>
+                <div class="options_list" id="colors_list"></div>
+            </div>
+            <div class="option_section" id="sizes_section">
+                <h4>Storage / Size:</h4>
+                <div class="options_list" id="sizes_list"></div>
+            </div>
+            <hr class="divider">
+            <div class="buttons">
+                <button class="btn_add_cart_detail" onclick="addToCartDetail()">
+                    <i class="fa-solid fa-cart-shopping"></i> Add To Cart
+                </button>
+                <button class="btn_wishlist" id="wishlist_btn" onclick="toggleWishlist()">
+                    <i class="fa-regular fa-heart"></i> Wishlist
+                </button>
+            </div>
+            <p class="added_msg" id="added_msg">✅ Added to cart!</p>
+        </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="reviews_section">
+        <h2><i class="fa-solid fa-star" style="color:#f5a623"></i> Reviews</h2>
+
+        <div class="avg_rating">
+            <div class="big_num" id="avg_num">0</div>
+            <div>
+                <div class="stars_avg" id="avg_stars"></div>
+                <div class="total_reviews" id="total_reviews_count">0 reviews</div>
+            </div>
+        </div>
+
+        <div class="add_review">
+            <h3>Write a Review</h3>
+            <div class="star_input">
+                <input type="radio" name="rating" id="s5" value="5">
+                <label for="s5"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" name="rating" id="s4" value="4">
+                <label for="s4"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" name="rating" id="s3" value="3">
+                <label for="s3"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" name="rating" id="s2" value="2">
+                <label for="s2"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" name="rating" id="s1" value="1">
+                <label for="s1"><i class="fa-solid fa-star"></i></label>
+            </div>
+            <input type="text" class="review_name_input" id="reviewer_name" placeholder="Your name">
+            <textarea class="review_text_input" id="review_text" placeholder="Share your experience..."></textarea>
+            <button class="submit_review_btn" id="submit_btn" onclick="submitReview()">Submit Review</button>
+        </div>
+
+        <div class="reviews_list" id="reviews_list">
+            <p class="no_reviews">Loading reviews...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = parseInt(params.get("id"));
+    let currentProduct = null;
+    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+    fetch('/shoop/products.json')
+        .then(res => res.json())
+        .then(products => {
+            currentProduct = products.find(p => p.id == productId);
+            if (!currentProduct) return;
+
+            document.getElementById("main_img").src = `/shoop/${currentProduct.img}`;
+            document.getElementById("product_name").innerText = currentProduct.name;
+            document.getElementById("product_price").innerText = `$${currentProduct.price}`;
+            document.title = `Zayro - ${currentProduct.name}`;
+
+            if (currentProduct.old_price) {
+                document.getElementById("product_old_price").innerText = `$${currentProduct.old_price}`;
+            }
+            if (currentProduct.description) {
+                document.getElementById("product_desc").innerText = currentProduct.description;
+            }
+
+            // Colors
+            if (currentProduct.colors?.length > 0) {
+                const colorsList = document.getElementById("colors_list");
+                currentProduct.colors.forEach((color, i) => {
+                    const btn = document.createElement("button");
+                    btn.className = "option_btn" + (i === 0 ? " active" : "");
+                    btn.innerText = color;
+                    btn.onclick = () => {
+                        document.querySelectorAll("#colors_list .option_btn").forEach(b => b.classList.remove("active"));
+                        btn.classList.add("active");
+                    };
+                    colorsList.appendChild(btn);
+                });
+            } else {
+                document.getElementById("colors_section").style.display = "none";
+            }
+
+            // Sizes
+            if (currentProduct.sizes?.length > 0) {
+                const sizesList = document.getElementById("sizes_list");
+                currentProduct.sizes.forEach((size, i) => {
+                    const btn = document.createElement("button");
+                    btn.className = "option_btn" + (i === 0 ? " active" : "");
+                    btn.innerText = size;
+                    btn.onclick = () => {
+                        document.querySelectorAll("#sizes_list .option_btn").forEach(b => b.classList.remove("active"));
+                        btn.classList.add("active");
+                    };
+                    sizesList.appendChild(btn);
+                });
+            } else {
+                document.getElementById("sizes_section").style.display = "none";
+            }
+
+            // Wishlist state
+            if (wishlist.includes(productId)) {
+                const btn = document.getElementById("wishlist_btn");
+                btn.classList.add("active");
+                btn.innerHTML = '<i class="fa-solid fa-heart" style="color:red"></i> Wishlist';
+            }
+
+            loadReviews();
+        });
+
+    function starsHtml(rating, size = 14) {
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            if (rating >= i) html += `<i class="fa-solid fa-star" style="font-size:${size}px"></i>`;
+            else if (rating >= i - 0.5) html += `<i class="fa-solid fa-star-half-stroke" style="font-size:${size}px"></i>`;
+            else html += `<i class="fa-regular fa-star" style="font-size:${size}px"></i>`;
+        }
+        return html;
+    }
+
+    async function loadReviews() {
+        const res = await fetch(`/api/reviews/${productId}`);
+        const reviews = await res.json();
+        const container = document.getElementById("reviews_list");
+
+        if (reviews.length === 0) {
+            container.innerHTML = '<p class="no_reviews">No reviews yet. Be the first!</p>';
+            document.getElementById("avg_num").innerText = "0";
+            document.getElementById("avg_stars").innerHTML = starsHtml(0, 20);
+            document.getElementById("total_reviews_count").innerText = "0 reviews";
+            document.getElementById("product_rating_display").innerHTML = `${starsHtml(0)} <span>No reviews yet</span>`;
+            return;
+        }
+
+        const avg = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+        document.getElementById("avg_num").innerText = avg;
+        document.getElementById("avg_stars").innerHTML = starsHtml(parseFloat(avg), 20);
+        document.getElementById("total_reviews_count").innerText = `${reviews.length} review${reviews.length > 1 ? 's' : ''}`;
+        document.getElementById("product_rating_display").innerHTML = `${starsHtml(parseFloat(avg))} <span>${avg} (${reviews.length} reviews)</span>`;
+
+        container.innerHTML = reviews.map(r => `
+            <div class="review_item">
+                <div class="review_header">
+                    <span class="reviewer_name">${r.name}</span>
+                    <span class="review_stars">${starsHtml(r.rating)}</span>
+                </div>
+                <p class="review_text">${r.text}</p>
+                <p class="review_date">${r.date}</p>
+            </div>`).join("");
+    }
+
+    async function submitReview() {
+        const ratingInput = document.querySelector('input[name="rating"]:checked');
+        const name = document.getElementById("reviewer_name").value.trim();
+        const text = document.getElementById("review_text").value.trim();
+
+        if (!ratingInput) { alert("Please select a rating ⭐"); return; }
+        if (!name) { alert("Please enter your name"); return; }
+        if (!text) { alert("Please write your review"); return; }
+
+        const btn = document.getElementById("submit_btn");
+        btn.disabled = true;
+        btn.innerText = "Submitting...";
+
+        await fetch(`/api/reviews/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, rating: parseInt(ratingInput.value), text })
+        });
+
+        ratingInput.checked = false;
+        document.getElementById("reviewer_name").value = "";
+        document.getElementById("review_text").value = "";
+        btn.disabled = false;
+        btn.innerText = "Submit Review";
+
+        loadReviews();
+    }
+
+    function addToCartDetail() {
+        if (!currentProduct) return;
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.id === currentProduct.id);
+        if (existing) existing.quantity += 1;
+        else cart.push({...currentProduct, quantity: 1});
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+        document.getElementById("cart_sidebar").classList.add("active");
+        const msg = document.getElementById("added_msg");
+        msg.style.display = "block";
+        setTimeout(() => msg.style.display = "none", 3000);
+    }
+
+    function toggleWishlist() {
+        const btn = document.getElementById("wishlist_btn");
+        const index = wishlist.indexOf(productId);
+        if (index === -1) {
+            wishlist.push(productId);
+            btn.classList.add("active");
+            btn.innerHTML = '<i class="fa-solid fa-heart" style="color:red"></i> Wishlist';
+        } else {
+            wishlist.splice(index, 1);
+            btn.classList.remove("active");
+            btn.innerHTML = '<i class="fa-regular fa-heart"></i> Wishlist';
+        }
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    }
+
+    function open_close_cart() {
+        document.getElementById("cart_sidebar").classList.toggle("active");
+    }
+
+    function updateCart() {
+        const cartItemsContainer = document.getElementById("cart_items");
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let total = 0, count = 0;
+        cartItemsContainer.innerHTML = "";
+        cart.forEach((item, index) => {
+            let itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            count += item.quantity;
+            cartItemsContainer.innerHTML += `
+                <div style="display:flex;gap:15px;align-items:center;padding:10px 0;border-bottom:1px solid #eee;">
+                    <img src="/shoop/${item.img}" style="width:60px;object-fit:contain;">
+                    <div style="flex:1">
+                        <h4 style="font-size:13px;margin-bottom:5px;">${item.name}</h4>
+                        <p style="color:#000;font-weight:bold;">$${itemTotal}</p>
+                    </div>
+                    <button onclick="removeItem(${index})" style="background:none;border:none;cursor:pointer;font-size:18px;color:#999;">✕</button>
+                </div>`;
+        });
+        document.querySelector('.price_cart_toral').innerText = `$${total}`;
+        document.querySelector('.Count_item_cart').innerText = count;
+    }
+
+    function removeItem(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+    }
+
+    updateCart();
+</script>
+</body>
+</html>

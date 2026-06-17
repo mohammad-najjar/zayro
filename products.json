@@ -1,0 +1,259 @@
+[
+  {
+    "id": 0,
+    "img": "img/product/0.png",
+    "name": "SAMSUNG 55 Inch UHD 4K Smart TV With Receiver",
+    "price": 350,
+    "category": "إلكترونيات",
+    "description": "Experience stunning 4K Ultra HD resolution with vivid colors and sharp contrast. Built-in receiver, smart features, and multiple HDMI ports for the ultimate home entertainment experience.",
+    "colors": ["Black"],
+    "sizes": ["55 Inch"]
+  },
+  {
+    "id": 1,
+    "img": "img/product/1.png",
+    "name": "Redmi 13C Dual SIM with 6GB RAM",
+    "price": 280,
+    "category": "موبايلات",
+    "description": "Powerful Redmi 13C with 6GB RAM, dual SIM support, large battery, and a stunning display. Perfect for everyday use with smooth performance.",
+    "colors": ["Black", "Blue", "Green"],
+    "sizes": ["64GB", "128GB"]
+  },
+  {
+    "id": 2,
+    "img": "img/product/2.png",
+    "name": "Dell Laptop Latitude 5530 Core i7-1255U 8GB SSD",
+    "price": 400,
+    "category": "إلكترونيات",
+    "description": "Business-grade Dell Latitude 5530 featuring Intel Core i7-1255U processor, 8GB RAM, fast SSD storage, and a sleek design for maximum productivity.",
+    "colors": ["Silver", "Black"],
+    "sizes": ["256GB SSD", "512GB SSD"]
+  },
+  {
+    "id": 3,
+    "img": "img/product/3.png",
+    "name": "Canon EOS RP Mirrorless Camera",
+    "price": 530,
+    "category": "إلكترونيات",
+    "description": "Full-frame mirrorless camera with 26.2MP sensor, 4K video recording, fast autofocus, and compact design. Ideal for professional photographers.",
+    "colors": ["Black"],
+    "sizes": ["Body Only", "With 24-105mm Lens"]
+  },
+  {
+    "id": 4,
+    "img": "img/product/4.png",
+    "name": "OPPO A18 128GB 4GB Glowing Black",
+    "price": 250,
+    "category": "موبايلات",
+    "description": "OPPO A18 with 128GB storage, 4GB RAM, stunning display, and long-lasting battery. Elegant design with smooth performance for daily use.",
+    "colors": ["Glowing Black", "Blue"],
+    "sizes": ["128GB"]
+  },
+  {
+    "id": 5,
+    "img": "img/product/5.png",
+    "name": "Samsung 27-Inch G55C Odyssey QHD 4k",
+    "price": 280,
+    "category": "إلكترونيات",
+    "description": "Curved gaming monitor with QHD resolution, 165Hz refresh rate, 1ms response time, and AMD FreeSync Premium for tear-free gaming.",
+    "colors": ["Black"],
+    "sizes": ["27 Inch"]
+  },
+  {
+    "id": 6,
+    "img": "img/product/6.png",
+    "name": "Infinix Smart (Galaxy White, 4GB RAM, 64GB Storage)",
+    "price": 220,
+    "old_price": 300,
+    "category": "موبايلات",
+    "description": "Infinix Smart with 4GB RAM, 64GB storage, large battery, and a beautiful Galaxy White finish. Great performance at an affordable price.",
+    "colors": ["Galaxy White", "Black"],
+    "sizes": ["64GB"]
+  },
+  {
+    "id": 7,
+    "img": "img/product/7.png",
+    "name": "HP Victus Gaming Laptop 8RAM SSD",
+    "price": 370,
+    "category": "إلكترونيات",
+    "description": "HP Victus gaming laptop with dedicated GPU, 8GB RAM, fast SSD, and a high-refresh-rate display. Built for serious gaming and multitasking.",
+    "colors": ["Black", "Silver"],
+    "sizes": ["256GB SSD", "512GB SSD"]
+  },
+  {
+    "id": 8,
+    "img": "img/product/8.png",
+    "name": "Xiaomi Redmi 13C Dual SIM 8GB",
+    "price": 320,
+    "category": "موبايلات",
+    "description": "Xiaomi Redmi 13C with 8GB RAM, dual SIM, powerful processor, and a large battery. Delivers smooth performance for gaming and everyday tasks.",
+    "colors": ["Black", "Blue", "Green"],
+    "sizes": ["128GB", "256GB"]
+  },
+  {
+    "id": 9,
+    "img": "img/product/9.png",
+    "name": "Handheld Barcode Scanner 1D/2D/QR Code",
+    "price": 80,
+    "old_price": 100,
+    "category": "إلكترونيات",
+    "description": "Fast and accurate handheld barcode scanner supporting 1D, 2D, and QR codes. USB connectivity, plug-and-play, compatible with all systems.",
+    "colors": ["Black", "White"],
+    "sizes": ["Standard"]
+  },
+  {
+    "id": 10,
+    "img": "img/product/10.png",
+    "name": "Large Venue building mapping Projector",
+    "price": 300,
+    "category": "إلكترونيات",
+    "description": "High-brightness projector for large venues and building mapping. Supports HD resolution, long lamp life, and wide connectivity options.",
+    "colors": ["White"],
+    "sizes": ["Standard"]
+  },
+  {
+    "id": 11,
+    "img": "img/product/11.png",
+    "name": "Infinix Hot 40i (RAM: 4+4GB, 128GB)",
+    "price": 260,
+    "old_price": 300,
+    "category": "موبايلات",
+    "description": "Infinix Hot 40i with extended 4+4GB RAM, 128GB storage, 5000mAh battery, and a large display for entertainment and productivity.",
+    "colors": ["Black", "Blue", "Gold"],
+    "sizes": ["128GB"]
+  },
+  {
+    "id": 12,
+    "img": "img/product/12.png",
+    "name": "HP DeskJet 2710 Printer, All-in-One",
+    "price": 370,
+    "category": "إلكترونيات",
+    "description": "HP DeskJet 2710 all-in-one printer with wireless printing, scanning, and copying. Easy setup, compact design, perfect for home and office use.",
+    "colors": ["White"],
+    "sizes": ["Standard"]
+  },
+  {
+    "id": 13,
+    "img": "img/product/13.png",
+    "name": "Fuzzy Logic Rice Cooker DIGITAL-JAR 1.8L 940W",
+    "price": 490,
+    "category": "أجهزة منزلية",
+    "description": "Smart fuzzy logic rice cooker with 1.8L capacity, 940W power, digital controls, and multiple cooking modes for perfect rice every time.",
+    "colors": ["White", "Black"],
+    "sizes": ["1.8L"]
+  },
+  {
+    "id": 14,
+    "img": "img/product/14.png",
+    "name": "Sencor STS 5070SS Electric Toaster for Four Slices",
+    "price": 340,
+    "category": "أجهزة منزلية",
+    "description": "4-slice electric toaster with stainless steel finish, 7 browning levels, defrost and reheat functions, and removable crumb tray for easy cleaning.",
+    "colors": ["Silver"],
+    "sizes": ["4 Slices"]
+  },
+  {
+    "id": 15,
+    "img": "img/product/15.png",
+    "name": "Infinix Smart 6 Plus (Miracle Black)",
+    "price": 240,
+    "old_price": 300,
+    "category": "موبايلات",
+    "description": "Infinix Smart 6 Plus in Miracle Black with large battery, smooth display, and reliable performance for everyday smartphone needs.",
+    "colors": ["Miracle Black", "Blue"],
+    "sizes": ["64GB", "128GB"]
+  },
+  {
+    "id": 16,
+    "img": "img/product/16.png",
+    "name": "Washing Machine 959 Series 8kg Senator Aqua SX, Silver",
+    "price": 600,
+    "old_price": 700,
+    "category": "أجهزة منزلية",
+    "description": "8kg front-load washing machine with multiple wash programs, energy efficiency, quiet operation, and a sleek silver finish.",
+    "colors": ["Silver"],
+    "sizes": ["8kg"]
+  },
+  {
+    "id": 17,
+    "img": "img/product/17.png",
+    "name": "HIKVISION PTZ Camera 4K Outdoor",
+    "price": 185,
+    "category": "إلكترونيات",
+    "description": "4K outdoor PTZ security camera with pan-tilt-zoom, night vision, weatherproof housing, and smart motion detection for complete surveillance.",
+    "colors": ["White"],
+    "sizes": ["Standard"]
+  },
+  {
+    "id": 18,
+    "img": "img/product/18.png",
+    "name": "OPPO Reno11 5G 256GB 12GB",
+    "price": 225,
+    "category": "موبايلات",
+    "description": "OPPO Reno11 5G with 12GB RAM, 256GB storage, 5G connectivity, stunning AMOLED display, and a powerful camera system.",
+    "colors": ["Black", "Gold", "Blue"],
+    "sizes": ["256GB"]
+  },
+  {
+    "id": 19,
+    "img": "img/product/19.png",
+    "name": "VIVAX kettle WH-175L with a capacity of 1.7L",
+    "price": 140,
+    "category": "أجهزة منزلية",
+    "description": "Elegant electric kettle with 1.7L capacity, fast boiling, auto shut-off, boil-dry protection, and a stylish design for your kitchen.",
+    "colors": ["White", "Black"],
+    "sizes": ["1.7L"]
+  },
+  {
+    "id": 20,
+    "img": "img/product/20.png",
+    "name": "Kenstar Ester ABS Plastic 750W Mixer Grinder",
+    "price": 280,
+    "old_price": 330,
+    "category": "أجهزة منزلية",
+    "description": "750W mixer grinder with multiple jars, stainless steel blades, 3-speed control, and ABS plastic body for safe and efficient food processing.",
+    "colors": ["White"],
+    "sizes": ["3 Jars"]
+  },
+  {
+    "id": 21,
+    "img": "img/product/21.png",
+    "name": "Multifunctional Food Processor",
+    "price": 350,
+    "category": "أجهزة منزلية",
+    "description": "Versatile food processor with multiple attachments for slicing, dicing, blending, and kneading. Saves time and effort in the kitchen.",
+    "colors": ["White", "Silver"],
+    "sizes": ["Standard"]
+  },
+  {
+    "id": 22,
+    "img": "img/product/22.png",
+    "name": "Zanussi Washing Machine 8 Kg 1200 RPM",
+    "price": 580,
+    "category": "أجهزة منزلية",
+    "description": "Zanussi 8kg washing machine with 1200 RPM spin speed, multiple wash programs, energy saving mode, and a large porthole for easy loading.",
+    "colors": ["White"],
+    "sizes": ["8kg"]
+  },
+  {
+    "id": 23,
+    "img": "img/product/23.png",
+    "name": "Sharp 42 Lt Electronic Oven Convection",
+    "price": 400,
+    "category": "أجهزة منزلية",
+    "description": "42-liter convection oven with electronic controls, multiple cooking functions, rotisserie, and even heat distribution for perfect cooking results.",
+    "colors": ["Silver", "Black"],
+    "sizes": ["42L"]
+  },
+  {
+    "id": 24,
+    "img": "img/product/24.png",
+    "name": "Lenovo Monitor Legion R27fc-30 Gaming Curved",
+    "price": 300,
+    "old_price": 380,
+    "category": "إلكترونيات",
+    "description": "27-inch curved gaming monitor with 165Hz refresh rate, Full HD resolution, AMD FreeSync, and 1ms response time for competitive gaming.",
+    "colors": ["Black"],
+    "sizes": ["27 Inch"]
+  }
+]

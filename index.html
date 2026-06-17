@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=500, user-scalable=no">
+    <link rel="icon" href="/shoop/zayro.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="/shoop/style.css">
+    <style>
+        * { direction: rtl; }
+
+        body { padding-top: 110px; margin: 0; }
+
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: #fff;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .header_row1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            gap: 12px;
+        }
+
+        /* لوغو */
+        .header_row1 .logo { width: 100px; flex-shrink: 0; }
+        .header_row1 .logo img { width: 100%; }
+
+        /* بحث */
+        .header_row1 .search_box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #f3f3f3;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 44px;
+        }
+        .header_row1 .search_box input {
+            flex: 1;
+            height: 100%;
+            padding: 0 12px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+        .header_row1 .search_box button {
+            width: 44px;
+            height: 44px;
+            background: #000;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header_row1 .search_box button i { color: #fff; font-size: 16px; }
+
+        /* أيقونات */
+        .header_row1 .h_icons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+        .header_row1 .h_icons .icon {
+            position: relative;
+            cursor: pointer;
+        }
+        .header_row1 .h_icons .icon i { font-size: 22px; color: #222; }
+        .header_row1 .h_icons .icon .count {
+            position: absolute;
+            top: -8px; left: -8px;
+            width: 18px; height: 18px;
+            background: #000;
+            color: #fff;
+            font-size: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Profile */
+        .profile_btn { position: relative; }
+        .profile_icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #eee;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .profile_icon i { font-size: 18px; color: #555; }
+        .profile_icon img { width: 100%; height: 100%; object-fit: cover; }
+        .profile_dropdown {
+            position: absolute;
+            top: 45px; left: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            width: 200px;
+            display: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .profile_dropdown.active { display: block; }
+        .profile_dropdown .profile_info { padding: 15px; background: #000; text-align: center; }
+        .profile_dropdown .profile_info .avatar_top { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ff9900; margin: 0 auto 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #333; }
+        .profile_dropdown .profile_info .avatar_top img { width: 100%; height: 100%; object-fit: cover; }
+        .profile_dropdown .profile_info .avatar_top i { font-size: 28px; color: #fff; }
+        .profile_dropdown .profile_info p { color: #aaa; font-size: 12px; margin: 0; }
+        .profile_dropdown .profile_info h4 { color: #ff9900; font-size: 14px; margin: 4px 0 0; }
+        .profile_dropdown .dropdown_links a,
+        .profile_dropdown .dropdown_links button {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 12px; color: #333; font-size: 13px;
+            text-decoration: none; width: 100%; background: none;
+            border: none; border-bottom: 1px solid #f0f0f0;
+            cursor: pointer; transition: 0.2s;
+        }
+        .profile_dropdown .dropdown_links a:hover,
+        .profile_dropdown .dropdown_links button:hover { background: #f8f8f8; }
+        .profile_dropdown .dropdown_links .logout_btn { color: #e51a1a; }
+
+        /* فئات */
+        .header_row2 {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-top: 1px solid #f0f0f0;
+            padding: 0 16px;
+        }
+        .header_row2::-webkit-scrollbar { display: none; }
+        .header_row2 a {
+            padding: 10px 16px;
+            font-size: 25px;
+            color: #000;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .header_row2 a:hover,
+        .header_row2 a.active {
+            color: #000;
+            border-bottom-color: #0400ff;
+            font-weight: 700;
+        }
+
+        /* Hero Slider */
+        .hero_slider { margin-bottom: 12px; }
+        .hero_slider .swiper-slide { height: 280px; overflow: hidden; }
+        .hero_slider .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-pagination-bullet { background: #fff; opacity: 0.7; }
+        .swiper-pagination-bullet-active { background: #fff !important; opacity: 1; width: 20px; border-radius: 10px; }
+
+        /* Products */
+        .all_products_section { margin: 0 0 60px; }
+        #all_products_grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1px;
+            background: #f0f0f0;
+        }
+        #all_products_grid .product { background: #fff; }
+
+        @media (max-width: 800px) {
+            #all_products_grid { grid-template-columns: repeat(2, 1fr); }
+            .product .img_product { height: 180px; }
+        }
+
+        /* Cart & Wishlist side */
+        .cart { position: fixed; top: 0; right: -350px; bottom: 0; z-index: 1100; background: #fff; border-left: 1px solid #eee; width: 350px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s ease-in-out; }
+        .cart.active { right: 0; }
+        .cart .top_cart { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .cart .top_cart h3 { font-size: 16px; }
+        .cart .top_cart .close_cart i { font-size: 28px; cursor: pointer; }
+        .cart .items_in_cart { flex: 1; overflow-y: auto; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 10px 0; }
+        .cart .items_in_cart .item_cart { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+        .cart .items_in_cart .item_cart img { width: 60px; height: 60px; object-fit: contain; }
+        .cart .items_in_cart .item_cart h4 { font-size: 13px; margin-bottom: 6px; }
+        .cart .items_in_cart .item_cart .delete_item i { font-size: 18px; cursor: pointer; color: #aaa; transition: 0.2s; }
+        .cart .items_in_cart .item_cart .delete_item i:hover { color: red; }
+        .cart .items_in_cart .item_cart .quantity_control { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+        .cart .items_in_cart .item_cart .quantity_control span { font-size: 16px; min-width: 30px; text-align: center; }
+        .cart .items_in_cart .item_cart .quantity_control button { width: 24px; height: 24px; border: 1px solid #ddd; border-radius: 2px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; background: #fff; }
+        .cart .bottom_cart .total { display: flex; justify-content: space-between; margin: 16px 0; }
+        .cart .bottom_cart .price_cart_toral { color: #000; font-size: 18px; font-weight: bold; }
+        .cart .bottom_cart .button_cart { display: flex; gap: 10px; }
+        .cart .bottom_cart .button_cart .btn_cart { flex: 1; text-align: center; padding: 10px; border: 2px solid #000; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .cart .bottom_cart .button_cart .btn { background: #000; color: #fff; }
+        .cart .bottom_cart .button_cart .trans_bg { background: transparent; color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="cart">
+    <div class="top_cart">
+        <h3>السلة <span class="Count_item_cart">0</span></h3>
+        <span onclick="open_close_cart()" class="close_cart"><i class="fa-regular fa-circle-xmark"></i></span>
+    </div>
+    <div class="items_in_cart" id="cart_items"></div>
+    <div class="bottom_cart">
+        <div class="total"><p>المجموع</p><p class="price_cart_toral">$0</p></div>
+        <div class="button_cart">
+            <a href="/shoop/checkout.html" class="btn_cart btn">الدفع</a>
+            <span onclick="open_close_cart()" class="btn_cart trans_bg">تسوق أكثر</span>
+        </div>
+    </div>
+</div>
+
+<header>
+    <div class="header_row1">
+        <!-- لوغو -->
+        <a href="/" class="logo"><img src="/shoop/zayrowhite.png" alt="ZAYRO"></a>
+
+        <!-- بحث -->
+        <form class="search_box" onsubmit="event.preventDefault(); applyFilter();">
+            <input type="text" id="search" placeholder="البحث في Zayro">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <!-- أيقونات -->
+        <div class="h_icons">
+            <div class="icon" onclick="open_close_wishlist()">
+                <i class="fa-regular fa-heart"></i>
+                <span class="count wishlist_count">0</span>
+            </div>
+            <div class="icon" onclick="open_close_cart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="count count_item_header">0</span>
+            </div>
+            <!-- Profile -->
+            <div class="profile_btn" id="profile_btn" style="display:none;">
+                <div class="profile_icon" id="profile_icon" onclick="toggleProfileDropdown()">
+                    <i class="fa-solid fa-circle-user"></i>
+                </div>
+                <div class="profile_dropdown" id="profile_dropdown">
+                    <div class="profile_info">
+                        <div class="avatar_top" id="avatar_top"><i class="fa-solid fa-circle-user"></i></div>
+                        <p>مرحباً</p>
+                        <h4 id="profile_username">User</h4>
+                    </div>
+                    <div class="dropdown_links">
+                        <a href="/profile-page"><i class="fa-solid fa-user"></i> ملفي</a>
+                        <a href="#" onclick="open_close_wishlist()"><i class="fa-solid fa-heart"></i> المفضلة</a>
+                        <a href="/account"><i class="fa-solid fa-gear"></i> الإعدادات</a>
+                        <button class="logout_btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</button>
+                    </div>
+                </div>
+            </div>
+            <div id="auth_buttons" style="display:flex; gap:8px;">
+                <a href="/login" style="background:#000;color:#fff;padding:6px 12px;border-radius:4px;font-size:12px;">دخول</a>
+                <a href="/signup" style="border:1px solid #000;color:#000;padding:6px 12px;border-radius:4px;font-size:12px;">تسجيل</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- فئات -->
+    <div class="header_row2">
+        <a href="#" class="active" onclick="filterCat('all',this)">الكل</a>
+        <a href="#" onclick="filterCat('mobiles',this)">موبايلات</a>
+        <a href="#" onclick="filterCat('electronics',this)">إلكترونيات</a>
+        <a href="#" onclick="filterCat('appliances',this)">منزلية</a>
+        <a href="#" onclick="filterCat('fashion',this)">أحذية</a>
+        <a href="#" onclick="filterCat('accessories',this)">اكسسوار</a>
+        <a href="#" onclick="filterCat('bags',this)">حقائب</a>
+        <a href="#" onclick="filterCat('sports',this)">رياضة</a>
+        <a href="#" onclick="filterCat('toys',this)">هدايا</a>
+        <a href="#" onclick="filterCat('cars',this)">سيارات</a>
+    </div>
+</header>
+
+<!-- Hero Slider -->
+<div class="hero_slider">
+    <div class="swiper heroSwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="/shoop/img/banner3_1.png" alt=""></div>
+            <div class="swiper-slide"><img src="/shoop/img/banner3_2.png" alt=""></div>
+            <div class="swiper-slide"><img src="/shoop/img/banner3_3.png" alt=""></div>
+            <div class="swiper-slide"><img src="/shoop/img/banner3_4.png" alt=""></div>
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+
+<!-- Products -->
+<div class="all_products_section">
+    <div class="container">
+        <div id="all_products_grid"></div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="big_row">
+            <img class="logo_footer" src="/shoop/zayroblack.png" alt="">
+            <div class="icons_footer">
+                <a href="#"><i class="fa-solid fa-phone"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+        </div>
+        <div class="row"><h4>Find It Fast</h4><div class="links"><a href="#"><i class="fa-solid fa-caret-right"></i> Laptops</a><a href="#"><i class="fa-solid fa-caret-right"></i> Smart Phones</a><a href="#"><i class="fa-solid fa-caret-right"></i> TV & Audio</a><a href="#"><i class="fa-solid fa-caret-right"></i> Appliances</a></div></div>
+        <div class="row"><h4>Quick Links</h4><div class="links"><a href="#"><i class="fa-solid fa-caret-right"></i> Your Account</a><a href="#"><i class="fa-solid fa-caret-right"></i> Returns</a><a href="#"><i class="fa-solid fa-caret-right"></i> Shipping</a></div></div>
+        <div class="row"><h4>Service</h4><div class="links"><a href="#"><i class="fa-solid fa-caret-right"></i> Support</a><a href="#"><i class="fa-solid fa-caret-right"></i> Privacy Policy</a><a href="#"><i class="fa-solid fa-caret-right"></i> Help</a></div></div>
+    </div>
+    <div class="bottom_footer">
+        <div class="container">
+            <p>&copy; Developed by <a href="https://github.com/mohammad-najjar" target="_blank"><span style="color:#b4b216;">Mohammad Najjar</span></a></p>
+            <div class="payment_img"><img src="/shoop/img/payment_method.png" alt=""></div>
+        </div>
+    </div>
+</footer>
+
+<div class="wishlist_side" id="wishlist_side">
+    <div class="top_cart">
+        <h3>المفضلة <span class="wishlist_count_header">0</span></h3>
+        <span onclick="open_close_wishlist()" class="close_cart"><i class="fa-solid fa-circle-xmark"></i></span>
+    </div>
+    <div class="items_in_wishlist" id="items_in_wishlist"></div>
+    <div class="bottom_cart">
+        <a href="#" class="btn_cart view_wishlist">المفضلة</a>
+        <button onclick="open_close_wishlist()" class="btn_cart shop_more">تسوق أكثر</button>
+    </div>
+</div>
+
+<div id="product_modal" class="modal">
+    <div class="modal_content">
+        <span class="close_modal" onclick="closeProductModal()">&times;</span>
+        <div class="modal_body" id="modal_body"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="/shoop/JS/swiper.js"></script>
+<script src="/shoop/JS/items_home.js"></script>
+<script src="/shoop/JS/main.js"></script>
+<script>
+    new Swiper(".heroSwiper", {
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        pagination: { el: ".swiper-pagination", clickable: true },
+    });
+
+    function filterCat(cat, el) {
+        document.querySelectorAll('.header_row2 a').forEach(a => a.classList.remove('active'));
+        el.classList.add('active');
+        const select = document.getElementById("category");
+        if (select) select.value = cat;
+        applyFilter();
+    }
+
+    function checkAuth() {
+        const token = localStorage.getItem("token");
+        const username = localStorage.getItem("username");
+        const avatar = localStorage.getItem("avatar");
+        if (token) {
+            document.getElementById("auth_buttons").style.display = "none";
+            document.getElementById("profile_btn").style.display = "block";
+            if (username) document.getElementById("profile_username").innerText = username;
+            const profileIcon = document.getElementById("profile_icon");
+            const avatarTop = document.getElementById("avatar_top");
+            if (avatar) {
+                profileIcon.innerHTML = `<img src="http://localhost:3000${avatar}">`;
+                avatarTop.innerHTML = `<img src="http://localhost:3000${avatar}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                profileIcon.innerHTML = `<i class="fa-solid fa-circle-user"></i>`;
+                avatarTop.innerHTML = `<i class="fa-solid fa-circle-user"></i>`;
+            }
+        } else {
+            document.getElementById("auth_buttons").style.display = "flex";
+            document.getElementById("profile_btn").style.display = "none";
+        }
+    }
+    function toggleProfileDropdown() {
+        document.getElementById("profile_dropdown").classList.toggle("active");
+    }
+    function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("avatar");
+        checkAuth();
+        document.getElementById("profile_dropdown").classList.remove("active");
+    }
+    document.addEventListener("click", (e) => {
+        const profileBtn = document.getElementById("profile_btn");
+        if (profileBtn && !profileBtn.contains(e.target)) {
+            document.getElementById("profile_dropdown")?.classList.remove("active");
+        }
+    });
+    checkAuth();
+</script>
+</body>
+</html>
