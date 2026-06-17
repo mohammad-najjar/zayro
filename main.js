@@ -16,7 +16,7 @@ function open_close_cart() {
     if(cart) cart.classList.toggle("active");
 }
 
-// جلب المنتجات من السيرفر الأونلاين بدلاً من الفولدر المحلي القديم
+// جلب المنتجات من السيرفر الأونلاين
 fetch('https://zayro-km0j.onrender.com/api/products')
 .then(response => response.json())
 .then(data => {
@@ -37,11 +37,11 @@ fetch('https://zayro-km0j.onrender.com/api/products')
     })
 })
 .catch(err => {
-    // في حال واجه السيرفر تأخيراً في الاستيقاظ (Sleep)، نحاول جلب الملف المحلي كبديل احتياطي
+    console.error("Error fetching online products, trying local backup:", err);
     fetch('products.json')
     .then(res => res.json())
     .then(data => {
-         // كود التعامل مع الأزرار الاحتياطية هنا إذا لزم الأمر
+         // كود التعامل مع الأزرار الاحتياطية
     });
 });
 
@@ -68,10 +68,10 @@ function updateCart() {
         total_Price += total_Price_item
         total_count += item.quantity
 
-        // تم حذف مسار /shoop/ من الصورة لتقرأ من بيئة الاستضافة مباشرة
+        // تعديل ربط رابط سيرفر ريندر بالصور داخل السلة
         cartItemsContainer.innerHTML += `
             <div class="item_cart">
-                <img src="${item.img}" alt="">
+                <img src="https://zayro-km0j.onrender.com/${item.img}" alt="">
                 <div class="content">
                     <h4>${item.name}</h4>
                     <p class="price_cart">$${total_Price_item}</p>
@@ -187,7 +187,6 @@ function updateWishlist() {
     const countHeader = document.querySelector(".wishlist_count_header");
     if(!wishlistContainer) return;
 
-    // جلب المفضلة أيضاً من السيرفر الأونلاين
     fetch('https://zayro-km0j.onrender.com/api/products')
         .then(response => response.json())
         .then(products => {
@@ -197,9 +196,10 @@ function updateWishlist() {
             products.forEach(product => {
                 if (wishlist.includes(product.id) || wishlist.includes(product.id.toString())) {
                     count++;
+                    // تعديل ربط السيرفر بالصور داخل المفضلة
                     itemsHtml += `
                         <div class="item_cart">
-                            <img src="${product.img}" alt="">
+                            <img src="https://zayro-km0j.onrender.com/${product.img}" alt="">
                             <div class="content">
                                 <h4>${product.name}</h4>
                                 <p class="price_cart">$${product.price}</p>
