@@ -58,7 +58,7 @@ function renderProducts(products) {
             <div class="product">
                 ${discount}
                 <div class="img_product" onclick="openProductModal(${product.id})" style="cursor:pointer;">
-                    <img src="${product.img}" alt="${product.name}">
+                    <img src="https://zayro-km0j.onrender.com/${product.img}" alt="${product.name}">
                 </div>
                 <div class="product_info">
                     <p class="name_product" onclick="openProductModal(${product.id})">${product.name}</p>
@@ -141,7 +141,7 @@ function applyFilter() {
 
 // Modal
 function openProductModal(id) {
-    fetch('https://zayro-km0j.onrender.com/api/products')
+    <img src="https://zayro-km0j.onrender.com/${product.img}" alt="">)
         .then(res => res.json())
         .then(products => {
             const product = products.find(p => p.id == id);
