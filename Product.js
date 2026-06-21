@@ -1,20 +1,17 @@
 const mongoose = require('mongoose');
 
-// 1. المخطط (Schema) يجب أن يُعرّف أولاً
 const productSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  image: { type: String },
+  image: { type: String, default: "" },
+  images: [{ type: String }],
   price: { type: Number, required: true },
   old_price: { type: Number },
-  category: { type: String },
-  description: { type: String },
-  reviews: [{
-    name: String,
-    rating: Number,
-    text: String,
-    date: String
-  }]
+  category: { type: String, default: "" },
+  description: { type: String, default: "" },
+  stock: { type: Number, default: 0 },
+  status: { type: String, default: "available" }, // available / unavailable
+  sold: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now }
 });
 
-// 2. التصدير (Export) يكون دائماً في نهاية الملف بعد قراءة المخطط
 module.exports = mongoose.model("Product", productSchema);
